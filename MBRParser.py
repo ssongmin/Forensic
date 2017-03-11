@@ -73,11 +73,11 @@ class PartitionEntry:
     def __init__(self, data, num):
         a = CustomMath()
         self.BootableFlag = data[0x00]
-        self.StartCHS = a.HtoD(data[0x01:0x03])
+        self.StartCHS = a.CgLittleEndian(data[0x01:0x03])
         self.PartitionType = data[0x04]
-        self.EndCHS = a.HtoD(data[0x05:0x07])
-        self.StartLBA = a.HtoD(data[0x08:0x0B])
-        self.SizeInSector = a.HtoD(data[0x0C:0x0F])
+        self.EndCHS = a.CgLittleEndian(data[0x05:0x07])
+        self.StartLBA = a.CgLittleEndian(data[0x08:0x0B])
+        self.SizeInSector = a.CgLittleEndian(data[0x0C:0x0F])
         if(self.is_empty() is False):
             print("----------------PartitionEntry%d------------------------" % num)
             self.show_partition_table()
@@ -98,7 +98,7 @@ class PartitionEntry:
             return False
 
 class CustomMath:
-    def HtoD(self, buf):
+    def CgLittleEndian(self, buf):
         val=0
         for i in range(0,len(buf)):
             multi=1
@@ -113,16 +113,16 @@ class NTFSParser:
         data = bytearray(f.read(0x200))
         self.show_hex_view(data)
         a = CustomMath()
-        self.JumpBootCode = a.HtoD(data[0x00:0x02])
-        self.OEMID = a.HtoD(data[0x03:0x10])
-        self.BytesPerSector = a.HtoD(data[0x11:0x12])
+        self.JumpBootCode = a.CgLittleEndian(data[0x00:0x02])
+        self.OEMID = a.CgLittleEndian(data[0x03:0x10])
+        self.BytesPerSector = a.CgLittleEndian(data[0x11:0x12])
         self.SectorsPerCluster = data[0x0D]
-        self.ReservedSectors = a.HtoD(data[0x0E:0x0F])
-        self.HiddenSectors = a.HtoD(data[0x1C:0x1F])
-        self.TotalSectors = a.HtoD(data[0x28:0x2F])
-        self.MFTClusterNumberForFile = a.HtoD(data[0x30:0x3F])
-        self.VolumeSerialNumber = a.HtoD(data[0x48:0x4F])
-        self.Signature = a.HtoD(data[0x01FE:0x01FF])
+        self.ReservedSectors = a.CgLittleEndian(data[0x0E:0x0F])
+        self.HiddenSectors = a.CgLittleEndian(data[0x1C:0x1F])
+        self.TotalSectors = a.CgLittleEndian(data[0x28:0x2F])
+        self.MFTClusterNumberForFile = a.CgLittleEndian(data[0x30:0x3F])
+        self.VolumeSerialNumber = a.CgLittleEndian(data[0x48:0x4F])
+        self.Signature = a.CgLittleEndian(data[0x01FE:0x01FF])
         self.show_ntfs()
         
     def show_ntfs(self):
